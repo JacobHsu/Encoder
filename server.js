@@ -7,6 +7,8 @@ exports.start = function(config) {
       res.send('Hello World!');
     });
 
+    app.use(express.static(__dirname + '/public'));
+
     var server = app.listen(config.port, function() {
         var host = server.address().address;
         var port = server.address().port;
