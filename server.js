@@ -2,12 +2,10 @@ var express = require('express');
 
 exports.start = function(config) {
     var app = express();
-
-    app.get('/', function (req, res) {
-      res.send('Hello World!');
-    });
-
+    
     app.use(express.static(__dirname + '/public'));
+
+    require('./router')(app);
 
     var server = app.listen(config.port, function() {
         var host = server.address().address;
