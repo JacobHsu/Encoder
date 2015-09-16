@@ -2,7 +2,7 @@ var express = require('express');
 
 exports.start = function(config) {
     var app = express();
-    
+
     app.use(express.static(__dirname + '/public'));
 
     require('./router')(app);

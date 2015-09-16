@@ -10,6 +10,9 @@ module.exports = function(app) {
       console.log(req.body);
     });
 
+    var job = require('./controllers/job');
+    app.post('/job', job.create);
+
     app.get('*', notFound);
 };
 
