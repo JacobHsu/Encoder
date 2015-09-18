@@ -1,5 +1,6 @@
 var bodyParser = require('body-parser');
 
+//Exporting an anonymous function
 module.exports = function(app) {
 
     app.use(bodyParser.json()); // for parsing application/json

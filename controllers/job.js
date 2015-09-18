@@ -1,3 +1,4 @@
+var jobModel  = require('../models/job')();
 /**
     {
         "job": "video",
@@ -13,6 +14,13 @@ exports.create = function(req, res) {
                     agent: req.headers['user-agent']
                 };
 
-    res.json(data);
+    jobModel.push(data, function(err, result) {
+        if (err) {
+            res.status(404).json({status:404, msg:err});
+            return;
+        }
+        res.json(result);
+    });
+
 };
 

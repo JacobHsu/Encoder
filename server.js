@@ -1,5 +1,7 @@
 var express = require('express');
 
+//Exporting a named function
+//The exports variable that is available within a module starts as a reference to
 exports.start = function(config) {
     var app = express();
 
