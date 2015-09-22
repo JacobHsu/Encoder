@@ -11,5 +11,18 @@ MongoClient.connect(url, function(err, db) {
     }
     console.log('Connection established to', url);
 
-    db.close();
+    var collection = db.collection('users');
+    var user1 = {name: 'modulus admin', age: 32, roles: ['admin', 'moderator', 'user']};
+    var user2 = {name: 'modulus user', age: 22, roles: ['user']};
+
+    collection.insert([user1, user2], function (err, result) {
+        if (err) {
+            console.log(err);
+            return;
+        } 
+        console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
+
+        db.close();
+    });
+
 });
