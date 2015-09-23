@@ -21,7 +21,18 @@ MongoClient.connect(url, function(err, db) {
             return;
         } 
         console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
+    });
 
+    collection.find({name: 'modulus user'}).toArray(function (err, result) {
+        if (err) {
+            console.log(err);
+            return;
+        } 
+        if (!result.length) {
+            console.log('No document(s)!');
+            return;
+        }
+        console.log('Found:', result);
         db.close();
     });
 
