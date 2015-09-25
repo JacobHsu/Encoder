@@ -23,6 +23,18 @@ MongoClient.connect(url, function(err, db) {
         console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
     });
 
+    collection.update({name: 'modulus user'}, {$set: {age: 23}}, function (err, result) {
+        if (err) {
+            console.log(err);
+            return;
+        } 
+        if (!result) {
+            console.log('No document found');
+            return;
+        }
+        console.log('Updated Successfully %d document(s).', result);
+    });
+
     collection.find({name: 'modulus user'}).toArray(function (err, result) {
         if (err) {
             console.log(err);
