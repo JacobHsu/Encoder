@@ -12,6 +12,19 @@ MongoClient.connect(url, function(err, db) {
     console.log('Connection established to', url);
 
     var collection = db.collection('users');
+
+    collection.remove({}, function (err, result) {
+        if (err) {
+            console.log(err);
+            return;
+        } 
+        if (!result) {
+            console.log('No document found');
+            return;
+        }
+        console.log('Removed all document');
+    });
+
     var user1 = {name: 'modulus admin', age: 32, roles: ['admin', 'moderator', 'user']};
     var user2 = {name: 'modulus user', age: 22, roles: ['user']};
 
@@ -35,7 +48,8 @@ MongoClient.connect(url, function(err, db) {
         console.log('Updated Successfully %d document(s).', result);
     });
 
-    collection.find({name: 'modulus user'}).toArray(function (err, result) {
+    //{} or {name: 'modulus user'}
+    collection.find({}).toArray(function (err, result) {
         if (err) {
             console.log(err);
             return;
