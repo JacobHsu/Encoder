@@ -1,4 +1,5 @@
 var async = require('async');
+var uuid = require('node-uuid');
 
 //module.exports. As with any variable, if you assign a new value to it, it is no longer bound to the previous value.
 module.exports = function() {
@@ -21,7 +22,9 @@ Job.prototype.push = function(task, myCallback) {
 
     async.waterfall([
         function(callback) {
-            var fileId = 'newUUID';
+            var fileId;
+            fileId = uuid.v4();
+            console.log(fileId);
             callback(null, fileId);
         },
         function(fileId, callback) {

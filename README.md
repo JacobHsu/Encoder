@@ -10,6 +10,8 @@
 `npm install body-parser --save`  
 `npm install mongodb --save`  
 `npm install async --save`  
+`npm install node-uuid --save`  
+
 
 ###MongoDB 
 
