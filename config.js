@@ -6,7 +6,8 @@ module.exports = function() {
             port: 8888
         },
         database: {
-            mongodb : 'mongodb://localhost:27017/myproject'
+            mongodb : 'mongodb://localhost:27017/myproject',
+            table: 'encoder'
         },
     };
 };
