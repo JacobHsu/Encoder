@@ -21,7 +21,7 @@ exports.query = function(url, table, arg, callback) {
                 return;
             } 
             if (!result.length) {
-                callback(null, JSON.stringify(arg)+' no result.');
+                callback(null, result.length); //JSON.stringify(arg)+' no result.'
                 return;
             }
             console.log('Found:', result);

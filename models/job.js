@@ -25,17 +25,35 @@ Job.prototype.push = function(task, myCallback) {
 
     async.waterfall([
         function(callback) {
-            var fileId = uuid.v4();
-            db.query( config.database.mongodb, config.database.table, {uuid: fileId} , function(err, rows) {
-                if (err) {
-                    callback('err', 'db.query.fail!');
-                    return;
+
+            var fileId;
+            var find = true;
+            async.doWhilst(
+                function (whileCallback) {
+                    //fn(whileCallback)
+                    fileId = uuid.v4();
+                    db.query( config.database.mongodb, config.database.table, {uuid: fileId} , function(err, rows) {
+                        if (err) {
+                            callback('err', 'db.query.fail!');
+                            return;
+                        }
+                        if(rows == 0) {
+                            //console.log('not found.');
+                            find = false; //test fails
+                        }
+                        whileCallback();
+                    });
+                },
+                function () { 
+                    //test 
+                    return find;
+                },
+                function (err) {
+                    //called after the test fails
+                    //console.log('not found mean there's no need to rebuild uuid.');
+                    callback(null, fileId);
                 }
-                console.log('rows:');
-                console.log(rows);
-                callback(null, fileId);
-            });
-           
+            );
         },
         function(fileId, callback) {
             var insertId = 'result.insertId';
@@ -43,7 +61,7 @@ Job.prototype.push = function(task, myCallback) {
         }
     ], function (err, result) {
         if (err) {
-            myCallback(err);
+            myCallback('waterfall mongodb err');
             return;
         }
         myCallback(null, result);
