@@ -1,6 +1,6 @@
 var mongoClient = require('mongodb').MongoClient;
 
-exports.query = function(url, table, arg, callback) {
+exports.query = function(type, url, table, arg, callback) {
 
     if (!url || !table || !arg) {
         callback(null, 'Unknow input data.');
@@ -15,20 +15,39 @@ exports.query = function(url, table, arg, callback) {
         }
 
         var collection = db.collection(table);
-        collection.find(arg).toArray(function (err, result) {
-            if (err) {
-                callback(err, err);
-                return;
-            } 
-            if (!result.length) {
-                callback(null, result.length); //JSON.stringify(arg)+' no result.'
-                return;
-            }
-            console.log('Found:', result);
-            callback(null, result);
-            db.close();
-            
-        });
+
+        switch(type) {
+            case 'find':
+                collection.find(arg).toArray(function (err, result) {
+                    if (err) {
+                        callback(err, err);
+                        return;
+                    } 
+                    if (!result.length) {
+                        callback(null, result.length); //JSON.stringify(arg)+' no result.'
+                        return;
+                    }
+                    console.log('Found:', result);
+                    callback(null, result);
+                    db.close();
+                });
+                break;
+            case 'insert':
+                collection.insert([arg], function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    } 
+                    //console.log('The documents inserted with "_id" are:', result);
+
+                    callback(null, result);
+                    db.close();
+                });
+                break;
+            default:
+                //default code block
+                callback(null, 'default');
+        }
 
     });
    

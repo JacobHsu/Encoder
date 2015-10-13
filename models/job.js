@@ -32,7 +32,7 @@ Job.prototype.push = function(task, myCallback) {
                 function (whileCallback) {
                     //fn(whileCallback)
                     fileId = uuid.v4();
-                    db.query( config.database.mongodb, config.database.table, {uuid: fileId} , function(err, rows) {
+                    db.query( 'find', config.database.mongodb, config.database.table, {uuid: fileId} , function(err, rows) {
                         if (err) {
                             callback('err', 'db.query.fail!');
                             return;
@@ -50,14 +50,22 @@ Job.prototype.push = function(task, myCallback) {
                 },
                 function (err) {
                     //called after the test fails
-                    //console.log('not found mean there's no need to rebuild uuid.');
+                    //console.log("not found mean there's no need to rebuild uuid.");
                     callback(null, fileId);
                 }
             );
         },
         function(fileId, callback) {
-            var insertId = 'result.insertId';
-            callback(null, {id: insertId, uuid: fileId});
+
+            db.query( 'insert', config.database.mongodb, config.database.table, {uuid: fileId} , function(err, rows) {
+                if (err) {
+                    callback('err', 'db.insert.fail!');
+                    return;
+                }
+                //console.log('ops Contains the documents inserted with added _id fields');
+                //console.log(rows.ops.length);
+                callback(null, {id: rows.ops[0]._id, uuid: fileId});
+            });
         }
     ], function (err, result) {
         if (err) {
