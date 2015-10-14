@@ -14,6 +14,7 @@ module.exports = function(app) {
     var job = require('./controllers/job');
     app.post('/job', job.create);
 
+    app.get('/job', job.query);
     app.get('*', notFound);
 };
 

@@ -35,12 +35,26 @@ exports.query = function(type, url, table, arg, callback) {
             case 'insert':
                 collection.insert([arg], function (err, result) {
                     if (err) {
-                        console.log(err);
+                        callback(err, err);
                         return;
                     } 
                     //console.log('The documents inserted with "_id" are:', result);
 
                     callback(null, result);
+                    db.close();
+                });
+                break;
+            case 'remove':
+                collection.remove(arg, function (err, result) {
+                    if (err) {
+                        callback(err, err);
+                        return;
+                    } 
+                    if (!result) {
+                        callback(err, 'No document found');
+                        return;
+                    }
+                    callback(null, 'Removed all document');
                     db.close();
                 });
                 break;

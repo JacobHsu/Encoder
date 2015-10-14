@@ -76,3 +76,27 @@ Job.prototype.push = function(task, myCallback) {
     });
 
 };
+
+
+Job.prototype.find = function(task, myCallback) {
+
+    db.query( 'find', config.database.mongodb, config.database.table, {} , function(err, rows) {
+        if (err) {
+            myCallback(null, 'db.query.fail!');
+            return;
+        }
+        myCallback(null, rows);
+
+        // db.query( 'remove', config.database.mongodb, config.database.table, {} , function(err, rows) {
+
+        //     if (err) {
+        //         myCallback(null, 'db.remove.fail!');
+        //         return;
+        //     }
+        //     console.log('job.db.remove');
+        //     myCallback(null, rows);
+        // });
+
+    });
+
+};

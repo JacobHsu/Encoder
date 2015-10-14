@@ -24,3 +24,17 @@ exports.create = function(req, res) {
 
 };
 
+
+exports.query = function(req, res) {
+
+    var data =  {};
+
+    jobModel.find(data, function(err, result) {
+        if (err) {
+            res.status(404).json({status:404, msg:err});
+            return;
+        }
+        res.json(result);
+    });
+
+};
