@@ -14,8 +14,12 @@ module.exports = function(app) {
     var job = require('./controllers/job');
     app.post('/job', job.create);
 
-    app.get('/job', job.query);
+    app.get('/jobs', job.query);
     app.get('*', notFound);
+
+    var cp = require('child_process');
+    var child = cp.fork('./system/supervisor');
+    child.send({});
 };
 
 function notFound(req, res) {
