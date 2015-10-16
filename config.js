@@ -9,5 +9,8 @@ module.exports = function() {
             mongodb : 'mongodb://localhost:27017/myproject',
             table: 'encoder'
         },
+        supervisor :{
+            milliseconds: 3000
+        }
     };
 };
