@@ -1,4 +1,5 @@
 var config  = require('../config')();
+var jobModel  = require('../models/job')();
 
 process.on('message', loop);
 
@@ -12,10 +13,11 @@ function Supervisor () {
 }
 
 Supervisor.prototype.run = function () {
-    console.log('supervisor loop run');
-
     var that = this;
-    that.polling();
+    jobModel.pop(function(err, result){
+        console.log('supervisor loop run pop');
+        that.polling();
+    });
 };
 
 Supervisor.prototype.polling = function () {

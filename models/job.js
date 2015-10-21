@@ -57,7 +57,16 @@ Job.prototype.push = function(task, myCallback) {
         },
         function(fileId, callback) {
 
-            db.query( 'insert', config.database.mongodb, config.database.table, {uuid: fileId} , function(err, rows) {
+            var task_json = {
+                uuid: fileId,
+                job: task.job,
+                config: task.config,
+                from: task.from,
+                state: 'wait',
+                time: new Date()
+            };
+
+            db.query( 'insert', config.database.mongodb, config.database.table, task_json , function(err, rows) {
                 if (err) {
                     callback('err', 'db.insert.fail!');
                     return;
@@ -75,6 +84,18 @@ Job.prototype.push = function(task, myCallback) {
         myCallback(null, result);
     });
 
+};
+
+Job.prototype.pop = function(myCallback) {
+
+    db.query( 'find', config.database.mongodb, config.database.table, {state:"wait"} , function(err, rows) {
+        if (err) {
+            myCallback(null, 'db.pop.fail!');
+            return;
+        }
+        console.log('Found rows[0]:', rows[0]);
+        myCallback(null, rows);
+    });
 };
 
 

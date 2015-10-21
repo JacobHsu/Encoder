@@ -27,7 +27,6 @@ exports.query = function(type, url, table, arg, callback) {
                         callback(null, result.length); //JSON.stringify(arg)+' no result.'
                         return;
                     }
-                    console.log('Found:', result);
                     callback(null, result);
                     db.close();
                 });
