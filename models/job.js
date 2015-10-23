@@ -2,7 +2,7 @@ var async = require('async');
 var uuid = require('node-uuid');
 var mongoClient = require('mongodb').MongoClient;
 
-var config  = require('../config')();
+//var config  = require('../config')();
 global.db = require('../libraries/database/mongodb');
 
 //module.exports. As with any variable, if you assign a new value to it, it is no longer bound to the previous value.
@@ -14,12 +14,12 @@ var Job = function () {};
 Job.prototype.push = function(task, myCallback) {
 
     if (!task.job) {
-        callback('unknow task job');
+        myCallback('[model] unknow task job');
         return;
     }
 
     if (!task.config) {
-        callback('no task config');
+        myCallback('[model] no task config');
         return;
     }
 
@@ -32,12 +32,13 @@ Job.prototype.push = function(task, myCallback) {
                 function (whileCallback) {
                     //fn(whileCallback)
                     fileId = uuid.v4();
-                    db.query( 'find', config.database.mongodb, config.database.table, {uuid: fileId} , function(err, rows) {
+
+                    db.query( 'find', {uuid: fileId} , function(err, rows) {
                         if (err) {
-                            callback('err', 'db.query.fail!');
+                            callback(err);
                             return;
                         }
-                        if(rows == 0) {
+                        if(!rows) {
                             //console.log('not found.');
                             find = false; //test fails
                         }
@@ -66,9 +67,9 @@ Job.prototype.push = function(task, myCallback) {
                 time: new Date()
             };
 
-            db.query( 'insert', config.database.mongodb, config.database.table, task_json , function(err, rows) {
+            db.query( 'insert', task_json , function(err, rows) {
                 if (err) {
-                    callback('err', 'db.insert.fail!');
+                    callback('[model] db.insert.fail!');
                     return;
                 }
                 //console.log('ops Contains the documents inserted with added _id fields');
@@ -88,12 +89,11 @@ Job.prototype.push = function(task, myCallback) {
 
 Job.prototype.pop = function(myCallback) {
 
-    db.query( 'find', config.database.mongodb, config.database.table, {state:"wait"} , function(err, rows) {
+    db.query( 'find', {state:"wait"} , function(err, rows) {
         if (err) {
-            myCallback(null, 'db.pop.fail!');
+            myCallback(err);
             return;
         }
-        console.log('Found rows[0]:', rows[0]);
         myCallback(null, rows);
     });
 };
@@ -101,14 +101,14 @@ Job.prototype.pop = function(myCallback) {
 
 Job.prototype.find = function(task, myCallback) {
 
-    db.query( 'find', config.database.mongodb, config.database.table, {} , function(err, rows) {
+    db.query( 'find', {} , function(err, rows) {
         if (err) {
             myCallback(null, 'db.query.fail!');
             return;
         }
         myCallback(null, rows);
 
-        // db.query( 'remove', config.database.mongodb, config.database.table, {} , function(err, rows) {
+        // db.query( 'remove', {} , function(err, rows) {
 
         //     if (err) {
         //         myCallback(null, 'db.remove.fail!');
@@ -118,6 +118,38 @@ Job.prototype.find = function(task, myCallback) {
         //     myCallback(null, rows);
         // });
 
+    });
+
+};
+
+/**
+ * [consumer setState]
+ * @param {[type]} data       [description]
+ * @param {[type]} myCallback [description]
+ */
+Job.prototype.setState = function (data, myCallback) {
+
+    if (!data.uuid) {
+        myCallback('setState no uuid');
+        return;
+    }
+
+    if (!data.state) {
+        myCallback('setState no state');
+        return;
+    }
+
+    var find = { uuid: data.uuid};
+    var value = { state: data.state };
+
+    db.update(find, value , function(err, rows) {
+
+        if (err) {
+            myCallback(null, '[model] db.update.fail!');
+            return;
+        }
+
+        myCallback(null, rows);
     });
 
 };

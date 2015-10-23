@@ -42,3 +42,18 @@ ournal
 2015-08-25T20:53:31.890+0800 I JOURNAL  [initandlisten] recover : no journal fil
 es present, no recovery needed
 ```
+
+###Tests
+
+[Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop)
+
+```
+    http://localhost:8888/job POST Headers(1)
+    Content-Type application/json
+    raw
+    {
+        "job": "video",
+        "config": "{file:http://yourdomain.mp4, backend:http://yourdomain/backend_api/type/:id}"   
+    }
+```
+

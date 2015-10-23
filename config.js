@@ -11,6 +11,9 @@ module.exports = function() {
         },
         supervisor :{
             milliseconds: 3000
+        },
+        forks: {
+            max: 1
         }
     };
 };

@@ -1,30 +1,35 @@
 var mongoClient = require('mongodb').MongoClient;
+var config  = require('../../config')();
 
-exports.query = function(type, url, table, arg, callback) {
+exports.query = function(type, arg, callback) {
 
-    if (!url || !table || !arg) {
-        callback(null, 'Unknow input data.');
+    if (!config.database.mongodb || !config.database.table) {
+        callback('Unknow config data.');
+        return;
+    }
+    if (!arg) {
+        callback('Unknow input data.');
         return;
     }
 
-    mongoClient.connect(url, function(err, db) {
+    mongoClient.connect(config.database.mongodb, function(err, db) {
 
         if (err) {
-            callback(err, 'Unable to connect to the mongoDB server. Error:'+ err);
+            callback(err);
             return;
         }
 
-        var collection = db.collection(table);
+        var collection = db.collection(config.database.table);
 
         switch(type) {
             case 'find':
                 collection.find(arg).toArray(function (err, result) {
                     if (err) {
-                        callback(err, err);
+                        callback(err);
                         return;
                     } 
                     if (!result.length) {
-                        callback(null, result.length); //JSON.stringify(arg)+' no result.'
+                        callback(null);
                         return;
                     }
                     callback(null, result);
@@ -34,11 +39,9 @@ exports.query = function(type, url, table, arg, callback) {
             case 'insert':
                 collection.insert([arg], function (err, result) {
                     if (err) {
-                        callback(err, err);
+                        callback(err);
                         return;
-                    } 
-                    //console.log('The documents inserted with "_id" are:', result);
-
+                    }
                     callback(null, result);
                     db.close();
                 });
@@ -46,13 +49,9 @@ exports.query = function(type, url, table, arg, callback) {
             case 'remove':
                 collection.remove(arg, function (err, result) {
                     if (err) {
-                        callback(err, err);
+                        callback(err);
                         return;
                     } 
-                    if (!result) {
-                        callback(err, 'No document found');
-                        return;
-                    }
                     callback(null, 'Removed all document');
                     db.close();
                 });
@@ -64,4 +63,42 @@ exports.query = function(type, url, table, arg, callback) {
 
     });
    
+};
+
+
+exports.update = function(find, arg, callback) {
+
+    if (!config.database.mongodb || !config.database.table) {
+        callback('Unknow config data.');
+        return;
+    }
+    if (!find || !arg) {
+        callback('Unknow input data.');
+        return;
+    }
+
+    mongoClient.connect(config.database.mongodb, function(err, db) {
+
+        if (err) {
+            callback(err);
+            return;
+        }
+
+        var collection = db.collection(config.database.table);
+
+        collection.update(find, {$set: arg}, function (err, result) {
+            if (err) {
+                callback(err);
+                return;
+            } 
+            if (!result) {
+                callback('Update no document found');
+                return;
+            }
+            callback(null, JSON.stringify(arg)+' updated Successfully');
+            db.close();
+        });
+
+    });
+
 };
