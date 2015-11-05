@@ -107,17 +107,20 @@ Job.prototype.find = function(task, myCallback) {
             return;
         }
         myCallback(null, rows);
+    });
 
-        // db.query( 'remove', {} , function(err, rows) {
+};
 
-        //     if (err) {
-        //         myCallback(null, 'db.remove.fail!');
-        //         return;
-        //     }
-        //     console.log('job.db.remove');
-        //     myCallback(null, rows);
-        // });
+Job.prototype.delete = function(task, myCallback) {
 
+    db.query( 'remove', {} , function(err, rows) {
+
+        if (err) {
+            myCallback(null, 'db.remove.fail!');
+            return;
+        }
+        console.log('job.db.remove');
+        myCallback(null, rows);
     });
 
 };

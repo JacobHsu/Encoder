@@ -57,3 +57,8 @@ es present, no recovery needed
     }
 ```
 
+>JSON
+{
+    "id": "563aa95d90d0cda01e16d071",
+    "uuid": "05d92323-a3ee-468e-ac67-3ce18f33dc57"
+}

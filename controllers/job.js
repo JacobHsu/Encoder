@@ -24,17 +24,22 @@ exports.create = function(req, res) {
 
 };
 
-
 exports.query = function(req, res) {
-
-    var data =  {};
-
-    jobModel.find(data, function(err, result) {
+    jobModel.find({}, function(err, result) {
         if (err) {
             res.status(404).json({status:404, msg:err});
             return;
         }
         res.json(result);
     });
+};
 
+exports.delete = function(req, res) {
+    jobModel.delete({}, function(err, result) {
+        if (err) {
+            res.status(404).json({status:404, msg:err});
+            return;
+        }
+        res.json(result);
+    });
 };
