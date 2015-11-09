@@ -1,5 +1,5 @@
 var config  = require('../config')();
-var jobModel  = require('../models/job')();
+var jobModel  = require('../models/job_model')();
 
 process.on('message', loop);
 

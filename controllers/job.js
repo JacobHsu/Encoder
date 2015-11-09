@@ -1,4 +1,4 @@
-var jobModel  = require('../models/job')();
+var jobModel  = require('../models/job_model')();
 /**
     {
         "job": "video",

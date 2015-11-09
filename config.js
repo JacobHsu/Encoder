@@ -14,6 +14,15 @@ module.exports = function() {
         },
         forks: {
             max: 1
-        }
+        },
+        jobVideoModules: [
+                {
+                    app: 'video',
+                    options: {
+                        publicPath: './public',
+                        videosPath: './videos'
+                    }
+                }
+            ]
     };
 };
