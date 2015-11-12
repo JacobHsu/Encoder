@@ -45,6 +45,7 @@ es present, no recovery needed
 
 ###Tests
 
+[JSON Editor Online](http://jsoneditoronline.org)
 [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop)
 
 ```
@@ -53,7 +54,10 @@ es present, no recovery needed
     raw
     {
         "job": "video",
-        "config": "{file:http://yourdomain.mp4, backend:http://yourdomain/backend_api/type/:id}"   
+        "config": {
+            "file":"http://video-js.zencoder.com/oceans-clip.mp4", 
+            "backend":"http://yourdomain/backend_api/type/:id"
+        }
     }
 ```
 

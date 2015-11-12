@@ -19,6 +19,9 @@ module.exports = function() {
                 {
                     app: 'video',
                     options: {
+                        wget: { 
+                            exe: 'wget'
+                        },
                         publicPath: './public',
                         videosPath: './videos'
                     }
