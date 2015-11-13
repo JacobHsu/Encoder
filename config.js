@@ -20,7 +20,7 @@ module.exports = function() {
                     app: 'video',
                     options: {
                         wget: { 
-                            exe: 'wget'
+                            exe: './bin/wget'
                         },
                         publicPath: './public',
                         videosPath: './videos'
