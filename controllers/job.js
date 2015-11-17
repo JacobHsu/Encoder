@@ -25,7 +25,14 @@ exports.create = function(req, res) {
 };
 
 exports.query = function(req, res) {
-    jobModel.find({}, function(err, result) {
+
+    if(req.params.uuid) {
+        params = {"uuid":req.params.uuid};
+    } else {
+        params = {};
+    }
+
+    jobModel.find(params, function(err, result) {
         if (err) {
             res.status(404).json({status:404, msg:err});
             return;

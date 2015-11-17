@@ -101,9 +101,9 @@ Job.prototype.pop = function(myCallback) {
 
 Job.prototype.find = function(task, myCallback) {
 
-    db.query( 'find', {} , function(err, rows) {
+    db.query( 'find', task , function(err, rows) {
         if (err) {
-            myCallback(null, 'db.query.fail!');
+            myCallback('db.query.fail!');
             return;
         }
         myCallback(null, rows);
@@ -116,7 +116,7 @@ Job.prototype.delete = function(task, myCallback) {
     db.query( 'remove', {} , function(err, rows) {
 
         if (err) {
-            myCallback(null, 'db.remove.fail!');
+            myCallback('db.remove.fail!');
             return;
         }
         console.log('job.db.remove');

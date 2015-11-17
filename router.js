@@ -9,6 +9,7 @@ module.exports = function(app) {
     app.post('/job', job.create);
 
     app.get('/jobs', job.query);
+    app.get('/jobs/:uuid', job.query);
     app.get('/jobs/clear', job.delete);
     app.get('*', notFound);
 
