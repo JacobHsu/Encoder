@@ -63,7 +63,8 @@ Job.prototype.push = function(task, myCallback) {
                 job: task.job,
                 config: task.config,
                 from: task.from,
-                state: 'wait',
+                state: "wait",
+                log: "",
                 time: new Date()
             };
 
@@ -153,6 +154,32 @@ Job.prototype.setState = function (data, myCallback) {
         }
 
         myCallback(null, rows);
+    });
+
+};
+
+
+Job.prototype.updateLog = function(sLog, jQid, myCallback) {
+
+    if (!sLog || !jQid) {
+        myCallback('updateLog no data');
+        return;
+    }
+
+    db.query( 'find', jQid , function(err, rows) {
+        if (err) {
+            myCallback('db.query.fail!');
+            return;
+        }
+
+        var value = { log: rows[0].log+sLog };
+        db.update(jQid, value , function(err, rows) {
+            if (err) {
+                myCallback('db.update.fail!');
+                return;
+            }
+            myCallback(null, rows);
+        });
     });
 
 };

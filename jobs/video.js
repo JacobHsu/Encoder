@@ -5,7 +5,7 @@ var async = require('async');
 
 module.exports  = VideoEncoder;
 
-function VideoEncoder (job, module_callback) {
+function VideoEncoder (job, db_log_func, module_callback) {
 
     var isInit = privateInit();
     if(!isInit) {
@@ -53,7 +53,11 @@ function VideoEncoder (job, module_callback) {
 
                 var log = '========= wget end =========\n';
                     log += fileurl+'\n';
-                console.log(log);
+
+                db_log_func.set(log, function(result){
+                    callback(null);
+                }); 
+
             });
 
         },

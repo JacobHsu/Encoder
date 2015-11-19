@@ -8,8 +8,8 @@ module.exports = function(app) {
     var job = require('./controllers/job');
     app.post('/job', job.create);
 
+    app.get('/job/:uuid', job.query);
     app.get('/jobs', job.query);
-    app.get('/jobs/:uuid', job.query);
     app.get('/jobs/clear', job.delete);
     app.get('*', notFound);
 
