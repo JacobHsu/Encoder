@@ -11,6 +11,7 @@
 `npm install mongodb --save`  
 `npm install async --save`  
 `npm install node-uuid --save`  
+`npm install progress --save`  
 
 
 ###MongoDB 

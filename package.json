@@ -21,6 +21,7 @@
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
     "mongodb": "^2.0.43",
-    "node-uuid": "^1.4.3"
+    "node-uuid": "^1.4.3",
+    "progress": "^1.1.8"
   }
 }
