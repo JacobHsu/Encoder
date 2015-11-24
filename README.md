@@ -49,6 +49,7 @@ es present, no recovery needed
 [JSON Editor Online](http://jsoneditoronline.org)
 [Postman](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop)
 
+job
 ```
     http://localhost:8888/job POST Headers(1)
     Content-Type application/json
@@ -66,4 +67,29 @@ es present, no recovery needed
 {
     "id": "563aa95d90d0cda01e16d071",
     "uuid": "05d92323-a3ee-468e-ac67-3ce18f33dc57"
+}
+
+progress
+```
+    http://localhost:8888/progress POST Headers(1)
+    Content-Type application/json
+    raw
+    {
+        "videouuid": "8d46767c-1fb4-4371-88d3-ae18c1a483c5"
+    }
+```
+>JSON
+{
+    "_id": "565270cffc08f8cc23b54518",
+    "uuid": "8d46767c-1fb4-4371-88d3-ae18c1a483c5",
+    "job": "video",
+    "config": {
+        "file": "http://video-js.zencoder.com/oceans-clip.mp4",
+        "backend": "http://yourdomain/backend_api/type/:id"
+    },
+    "from": "127.0.0.1",
+    "state": "start",
+    "progress": 30,
+    "log": "========= wget end =========\nhttp://video-js.zencoder.com/oceans-clip.mp4\n",
+    "time": "2015-11-23T01:50:07.483Z"
 }

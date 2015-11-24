@@ -11,6 +11,9 @@ module.exports = function(app) {
     app.get('/job/:uuid', job.query);
     app.get('/jobs', job.query);
     app.get('/jobs/clear', job.delete);
+
+    app.post('/progress', job.progress);
+
     app.get('*', notFound);
 
     var cp = require('child_process');

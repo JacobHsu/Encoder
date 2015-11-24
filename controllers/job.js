@@ -1,4 +1,5 @@
 var jobModel  = require('../models/job_model')();
+var ProgressBar = require('progress');
 /**
     {
         "job": "video",
@@ -48,5 +49,18 @@ exports.delete = function(req, res) {
             return;
         }
         res.json(result);
+    });
+};
+
+exports.progress = function(req, res) {
+    var params = {"uuid":req.body.videouuid};
+    jobModel.find(params, function(err, result) {
+        if (err) {
+            res.status(404).json({status:404, msg:err});
+            return;
+        }
+        var bar = new ProgressBar(':bar :percent', { total: 100 });
+        bar.tick(result[0]["progress"]);
+        res.json(result[0]);
     });
 };

@@ -1,3 +1,7 @@
+/**
+ * https://www.npmjs.com/package/progress
+ * note: { total: 10 } bar.tick(2); ==-------- 20%
+ */
 var ProgressBar = require('progress');
 var https = require('http');
  

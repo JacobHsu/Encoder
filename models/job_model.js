@@ -64,6 +64,7 @@ Job.prototype.push = function(task, myCallback) {
                 config: task.config,
                 from: task.from,
                 state: "wait",
+                progress: 0,
                 log: "",
                 time: new Date()
             };
