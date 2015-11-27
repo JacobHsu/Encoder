@@ -14,7 +14,7 @@ var req = https.request({
 req.on('response', function(res){
   var len = parseInt(res.headers['content-length'], 10);
  
-  console.log();
+  console.log(res); return;
   var bar = new ProgressBar('  downloading [:bar] :percent :etas', {
     complete: '=',
     incomplete: ' ',

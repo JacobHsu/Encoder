@@ -2,6 +2,7 @@ global.config  = require('../config')();
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
+var ProgressBar = require('progress');
 
 module.exports  = VideoEncoder;
 
@@ -36,12 +37,19 @@ function VideoEncoder (job, db_log_func, module_callback) {
 
         function(callback) {
 
-            var args = ['--no-check-certificate', fileurl ,'-O', output];
+            var args = [' --no-check-certificate', fileurl ,'-O', output];
             var spawn = require('child_process').spawn,
                 wget = spawn(this.wget, args);
 
-            wget.stderr.on('data', function(data) {
-
+            wget.stderr.on('data', function(oData) {
+                //process.stdout.write(oData);
+                var sData = oData.toString();
+                var iPercentage = sData.match(/ (.*?)%/g) == null ? '': parseInt(sData.match(/ (.*?)%/g) );
+                var bar;
+                if(iPercentage) {
+                    bar = new ProgressBar('wget :bar :percent', { total: 100 });
+                    bar.tick(iPercentage);
+                }
             });
 
             var wgetLog = '';
@@ -64,14 +72,14 @@ function VideoEncoder (job, db_log_func, module_callback) {
         function(callback){
 
         }
-    ], function (err, result) {
+    ], function (err, ret) {
 
         if(err){
-            module_callback(err, result);
+            module_callback(err, ret);
             return;
         }
 
-        module_callback(null, result);
+        module_callback(null, ret);
 
     });
 
