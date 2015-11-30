@@ -17,7 +17,11 @@ process.on('message', function(job) {
             config: job.config,
             uuid:job.uuid
         };
-        require('../jobs/'+job.job)(req, db_log_func, function(err, result) {
+        require('../jobs/'+job.job)(req, db_log_func, function(err, ret) {
+            if (err) {
+                console.log(err);
+                return;
+            }
             console.log('[consumer] require jobs');
         });
 

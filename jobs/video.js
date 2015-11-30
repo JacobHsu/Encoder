@@ -1,4 +1,6 @@
 global.config  = require('../config')();
+var url = require('url');
+var http = require('http');
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
@@ -31,10 +33,38 @@ function VideoEncoder (job, db_log_func, module_callback) {
     });
 
     var fileurl = job.config.file;
-    var output = this.videosPath + '/' + job.uuid + path.extname(fileurl);
+    var extname = path.extname(fileurl);
+    var output = this.videosPath + '/' + job.uuid + extname;
+
 
     async.waterfall([
 
+        function(callback){
+            var parseUrl = url.parse(fileurl, true);
+
+            var req = http.request({
+              host: parseUrl.host,
+              port: 80,
+              path: parseUrl.path
+            });
+             
+            req.on('response', function(res){
+                //console.log(res.headers); 
+                if(res.headers['content-type'] !== 'video/mp4') {
+                    module_callback('[jobs] data type err!');
+                    return
+                }
+            });
+
+            req.end();
+
+            req.on('error', function(e) {
+                console.error(e);
+                return;
+            });
+
+            callback(null);
+        },
         function(callback) {
 
             var args = [' --no-check-certificate', fileurl ,'-O', output];
