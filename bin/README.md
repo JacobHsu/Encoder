@@ -1,7 +1,20 @@
+ffmpeg
+-----
+### Download
+http://ffmpeg.zeranoe.com/builds/
+
+### Command
+Win開cmd的快速方法 
+`windows資料夾 / Shift + 右鍵 / 在此處開啟命令列視窗(w)`
+``` bash
+ffmpeg -i input.mp4 -y -ss 00:00:01 -f image2 -vframes 1 output.jpg
+```
+
 wget
 -----
 ### Download
 https://eternallybored.org/misc/wget/
+FFmpeg 64-bit Static Versions
 
 ### Command
 

@@ -29,7 +29,7 @@ function VideoEncoder (job, db_log_func, module_callback) {
 
     config.jobVideoModules.forEach(function (appConfig) {
         this.videosPath = appConfig.options.videosPath;
-        this.wget = appConfig.options.wget.exe;
+        this.wgetExe = appConfig.options.wget.exe;
     });
 
     var fileurl = job.config.file;
@@ -39,7 +39,7 @@ function VideoEncoder (job, db_log_func, module_callback) {
 
     async.waterfall([
 
-        function(callback){
+        function(http_callback){
             var parseUrl = url.parse(fileurl, true);
 
             var req = http.request({
@@ -51,7 +51,7 @@ function VideoEncoder (job, db_log_func, module_callback) {
             req.on('response', function(res){
                 //console.log(res.headers); 
                 if(res.headers['content-type'] !== 'video/mp4') {
-                    module_callback('[jobs] data type err!');
+                    http_callback('[jobs] data type err!');
                     return
                 }
             });
@@ -63,13 +63,13 @@ function VideoEncoder (job, db_log_func, module_callback) {
                 return;
             });
 
-            callback(null);
+            http_callback(null);
         },
-        function(callback) {
+        function(wget_callback) {
 
-            var args = [' --no-check-certificate', fileurl ,'-O', output];
+            var args = ['--no-check-certificate', fileurl ,'-O', output];
             var spawn = require('child_process').spawn,
-                wget = spawn(this.wget, args);
+                wget = spawn(this.wgetExe, args);
 
             wget.stderr.on('data', function(oData) {
                 //process.stdout.write(oData);
@@ -82,10 +82,9 @@ function VideoEncoder (job, db_log_func, module_callback) {
                 }
             });
 
-            var wgetLog = '';
             wget.on('exit', function(code) {
                 if (code !== 0) {
-                    callback('wget_error_msg '+ wgetLog);
+                    wget_callback('wget_error_msg '+ code);
                     return;
                 } 
 
@@ -93,7 +92,7 @@ function VideoEncoder (job, db_log_func, module_callback) {
                     log += fileurl+'\n';
 
                 db_log_func.set(log, function(result){
-                    callback(null);
+                    wget_callback(null);
                 }); 
 
             });
