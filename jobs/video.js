@@ -30,17 +30,24 @@ function VideoEncoder (job, db_log_func, module_callback) {
     config.jobVideoModules.forEach(function (appConfig) {
         this.videosPath = appConfig.options.videosPath;
         this.wgetExe = appConfig.options.wget.exe;
+        this.ffmpegExe = appConfig.options.ffmpeg.exe;
+        this.ffImage = appConfig.options.ffmpeg.image;
+        this.ffmp4 = appConfig.options.ffmpeg.mp4;
+        this.ffwebm = appConfig.options.ffmpeg.webm;
+        this.ff360p = appConfig.options.ffmpeg.ff360p;
+        this.ff480p = appConfig.options.ffmpeg.ff480p;
+        this.ff720p = appConfig.options.ffmpeg.ff720p;
+        this.ff1080p = appConfig.options.ffmpeg.ff1080p;
     });
 
-    var fileurl = job.config.file;
-    var extname = path.extname(fileurl);
-    var output = this.videosPath + '/' + job.uuid + extname;
-
+    var fileUrl = job.config.file;
+    var fileName = job.uuid;
+    var extname = path.extname(fileUrl);
 
     async.waterfall([
 
         function(http_callback){
-            var parseUrl = url.parse(fileurl, true);
+            var parseUrl = url.parse(fileUrl, true);
 
             var req = http.request({
               host: parseUrl.host,
@@ -67,7 +74,9 @@ function VideoEncoder (job, db_log_func, module_callback) {
         },
         function(wget_callback) {
 
-            var args = ['--no-check-certificate', fileurl ,'-O', output];
+            var output = this.videosPath + '/' + fileName + extname;
+
+            var args = ['--no-check-certificate', fileUrl ,'-O', output];
             var spawn = require('child_process').spawn,
                 wget = spawn(this.wgetExe, args);
 
@@ -79,6 +88,9 @@ function VideoEncoder (job, db_log_func, module_callback) {
                 if(iPercentage) {
                     bar = new ProgressBar('wget :bar :percent', { total: 100 });
                     bar.tick(iPercentage);
+                    if (bar.complete) {
+                        console.log('complete\n');
+                    }
                 }
             });
 
@@ -89,7 +101,7 @@ function VideoEncoder (job, db_log_func, module_callback) {
                 } 
 
                 var log = '========= wget end =========\n';
-                    log += fileurl+'\n';
+                    log += fileUrl+'\n';
 
                 db_log_func.set(log, function(result){
                     wget_callback(null);
@@ -98,7 +110,67 @@ function VideoEncoder (job, db_log_func, module_callback) {
             });
 
         },
-        function(callback){
+        function(ffmpeg_callback){
+
+            var inputVideo = this.videosPath + '/' + fileName + extname;
+            var outputImg =  this.videosPath + '/' + fileName + '.jpg';
+
+            var args = this.ffImage;
+            args[1] = inputVideo; 
+            args.push(outputImg);
+
+            var spawn = require('child_process').spawn,
+                ffmpeg = spawn(this.ffmpegExe, args);
+
+            var ffmpegLog = '';
+
+            ffmpeg.stdout.on('data', function(data) {
+                console.log('stdout:', data);
+            });
+
+            ffmpeg.stderr.on('data', function(data) {
+                ffmpegLog = ffmpegLog + data.toString();
+            });
+            ffmpeg.on('exit', function(code) {
+
+                if (code !== 0) {
+                    ffmpeg_callback('ffmpeg_check_video_fail');
+                    return;
+                }
+
+                var videoBtype = 0;
+                var videoDuration = 0;
+
+                var size = (ffmpegLog) ? ffmpegLog.match(/Video: mjpeg, (.*?),(.*?)x(.*?),/g) : [];
+                if (size) {
+                    var btype = size[0].split("x");
+                    var reg = /[^\d]/g;
+                    videoBtype = btype[1].substr(0, 4).replace(reg, "");
+                }
+
+                var totalTime = (ffmpegLog) ? ffmpegLog.match(/Duration: (.*?), start:/) : [];
+                if (!totalTime) { 
+                    totalTime = (ffmpegLog) ? ffmpegLog.match(/Duration: (.*?), bitrate:/) : []; //.mpg
+                }
+                var rawDuration = totalTime[1];
+                var arHMS = rawDuration.split(":").reverse();
+                videoDuration = parseFloat(arHMS[0]);
+                if (arHMS[1]) videoDuration += parseInt(arHMS[1]) * 60;
+                if (arHMS[2]) videoDuration += parseInt(arHMS[2]) * 60 * 60;
+
+                if (!videoBtype || !videoDuration) {
+                    ffmpeg_callback({err_msg : 'ffmpeg_check_video_fail [size:' + size + ',videoBtype:' + videoBtype+ ',videoDuration:' + videoDuration + ',totalTime:' + totalTime + ']'});
+                    return;
+                }
+
+                var ffmpegDebugLog = '{ffmpeg_check_video : [videoUuid:' + fileName + ', videoBtype:' + videoBtype + ',videoDuration:' + videoDuration + ']}\n';
+                console.log(ffmpegDebugLog);
+
+                db_log_func.set(ffmpegDebugLog, function(result){
+                    ffmpeg_callback(null);
+                });
+
+            });
 
         }
     ], function (err, ret) {
