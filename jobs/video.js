@@ -29,15 +29,16 @@ function VideoEncoder (job, db_log_func, module_callback) {
 
     config.jobVideoModules.forEach(function (appConfig) {
         this.videosPath = appConfig.options.videosPath;
+        this.publicPath = appConfig.options.publicPath;
         this.wgetExe = appConfig.options.wget.exe;
         this.ffmpegExe = appConfig.options.ffmpeg.exe;
         this.ffImage = appConfig.options.ffmpeg.image;
         this.ffmp4 = appConfig.options.ffmpeg.mp4;
-        this.ffwebm = appConfig.options.ffmpeg.webm;
         this.ff360p = appConfig.options.ffmpeg.ff360p;
         this.ff480p = appConfig.options.ffmpeg.ff480p;
         this.ff720p = appConfig.options.ffmpeg.ff720p;
         this.ff1080p = appConfig.options.ffmpeg.ff1080p;
+        this.ffbtype = appConfig.options.ffmpeg.ffbtype;
     });
 
     var fileUrl = job.config.file;
@@ -167,10 +168,51 @@ function VideoEncoder (job, db_log_func, module_callback) {
                 console.log(ffmpegDebugLog);
 
                 db_log_func.set(ffmpegDebugLog, function(result){
-                    ffmpeg_callback(null);
+                    ffmpeg_callback(null, inputVideo, videoBtype, videoDuration);
                 });
 
             });
+
+        },
+        function(inputVideo, videoBtype, videoDuration, ffmpeg_callback){
+
+            //output max video btype
+            var videosSize = this.ffbtype.replace(/[a-z]/g,'').split(','); //["360", "480", "720", "1080"]
+            function funcVideoBtype(value) {
+                return value <= parseInt(videoBtype);
+            }
+            var btypes = videosSize.filter(funcVideoBtype); //e.g. ["360", "480"]
+            if(btypes.length == 0) {
+                btypes = ['360'];
+            }
+
+            //ffmpeg command
+            var mp4_command_args = this.ffmp4;
+            var output_ffmpeg_args;
+            for (var n in btypes) {
+                var btype = btypes[n];
+                var outputMp4 = this.publicPath + '/' + fileName +'-'+btype+'p.mp4';
+
+                if(btype =='360'){
+                    output_ffmpeg_args = this.ff360p;
+                } else if (btype =='480') {
+                    output_ffmpeg_args = this.ff480p;
+                } else if (btype =='720') {
+                    output_ffmpeg_args = this.ff720p;
+                } else if (btype =='1080') {
+                    output_ffmpeg_args = this.ff1080p;
+                }
+                output_ffmpeg_args.push(outputMp4);
+
+                mp4_command_args = mp4_command_args.concat(output_ffmpeg_args);
+            }
+
+            var input_args = ['-i', inputVideo];
+            var ffmpeg_args = input_args.concat(mp4_command_args);
+            var str = ffmpeg_args.toString()
+            var commandstr = str.replace(/,/g, " ");
+            console.log('ffmpeg command: '+commandstr);
+
 
         }
     ], function (err, ret) {

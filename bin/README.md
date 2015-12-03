@@ -1,7 +1,7 @@
 ffmpeg
 -----
 ### Download
-http://ffmpeg.zeranoe.com/builds/
+http://ffmpeg.zeranoe.com/builds/  
 
 ### Command
 Win開cmd的快速方法 
@@ -9,6 +9,13 @@ Win開cmd的快速方法
 ``` bash
 ffmpeg -i input.mp4 -y -ss 00:00:01 -f image2 -vframes 1 output.jpg
 ```
+
+#### Creating Multiple Outputs
+
+https://trac.ffmpeg.org/wiki/Creating%20multiple%20outputs  
+``` bash
+ffmpeg -i ./videos/6594e5f6-a425-4f6f-be6e-1fbd5c479f05.mp4 -y -pass 1 -vcodec libx264 -b:v 100 -bt 100 -threads 0 -qmin 10 -qmax 31 -g 30 -s 640x360 -b 300k -ab 128k -ac 2 ./public/6594e5f6-a425-4f6f-be6e-1fbd5c479f05-360p.mp4
+ ```
 
 wget
 -----
