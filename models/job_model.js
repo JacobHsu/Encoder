@@ -160,6 +160,33 @@ Job.prototype.setState = function (data, myCallback) {
 };
 
 
+Job.prototype.updateProgress = function (data, myCallback) {
+
+    if (!data.uuid) {
+        myCallback('updateProgress no uuid');
+        return;
+    }
+
+    if (!data.progress) {
+        myCallback('setState no progress');
+        return;
+    }
+
+    var find = { uuid: data.uuid};
+    var value = { progress: data.progress };
+
+    db.update(find, value , function(err, rows) {
+
+        if (err) {
+            myCallback(null, '[model] db.updateProgress.fail!');
+            return;
+        }
+
+        myCallback(null, rows);
+    });
+
+};
+
 Job.prototype.updateLog = function(sLog, jQid, myCallback) {
 
     if (!sLog || !jQid) {
@@ -184,3 +211,5 @@ Job.prototype.updateLog = function(sLog, jQid, myCallback) {
     });
 
 };
+
+

@@ -8,7 +8,7 @@ var ProgressBar = require('progress');
 
 module.exports  = VideoEncoder;
 
-function VideoEncoder (job, db_log_func, module_callback) {
+function VideoEncoder (job, log_consumer, progress_consumer, module_callback) {
 
     var isInit = privateInit();
     if(!isInit) {
@@ -104,7 +104,7 @@ function VideoEncoder (job, db_log_func, module_callback) {
                 var log = '========= wget end =========\n';
                     log += fileUrl+'\n';
 
-                db_log_func.set(log, function(result){
+                log_consumer.set(log, function(result){
                     wget_callback(null);
                 }); 
 
@@ -167,7 +167,7 @@ function VideoEncoder (job, db_log_func, module_callback) {
                 var ffmpegDebugLog = '{ffmpeg_check_video : [videoUuid:' + fileName + ', videoBtype:' + videoBtype + ',videoDuration:' + videoDuration + ']}\n';
                 console.log(ffmpegDebugLog);
 
-                db_log_func.set(ffmpegDebugLog, function(result){
+                log_consumer.set(ffmpegDebugLog, function(result){
                     ffmpeg_callback(null, inputVideo, videoBtype, videoDuration);
                 });
 
@@ -187,7 +187,7 @@ function VideoEncoder (job, db_log_func, module_callback) {
             }
 
             //ffmpeg command
-            var mp4_command_args = this.ffmp4;
+            var mp4_cmd_args = this.ffmp4;
             var output_ffmpeg_args;
             for (var n in btypes) {
                 var btype = btypes[n];
@@ -204,15 +204,80 @@ function VideoEncoder (job, db_log_func, module_callback) {
                 }
                 output_ffmpeg_args.push(outputMp4);
 
-                mp4_command_args = mp4_command_args.concat(output_ffmpeg_args);
+                mp4_cmd_args = mp4_cmd_args.concat(output_ffmpeg_args);
             }
 
             var input_args = ['-i', inputVideo];
-            var ffmpeg_args = input_args.concat(mp4_command_args);
-            var str = ffmpeg_args.toString()
-            var commandstr = str.replace(/,/g, " ");
-            console.log('ffmpeg command: '+commandstr);
+            var ffmpegArgs = input_args.concat(mp4_cmd_args);
+            
+            var str = ffmpegArgs.toString()
+            var cmdstr = str.replace(/,/g, " ");
+            console.log('ffmpeg command: ffmpeg '+cmdstr);
 
+            ffmpeg_callback(null, ffmpegArgs, videoDuration);
+
+        },
+        function(aFFmpegArgs, sVideoDuration, ffmpeg_callback){
+
+            var spawn = require('child_process').spawn,
+                ffmpeg = spawn(this.ffmpegExe, aFFmpegArgs),
+                start = new Date();
+
+            ffmpeg.stdout.on('data', function(data) {
+                console.log('stdout:', data);
+            });
+
+            var time = 0;
+            var ffmpegLog ='';
+            
+            ffmpeg.stderr.on('data', function(data) {
+
+                //ffmpegLog = ffmpegLog + data.toString(); 
+                var content = data.toString();
+                //process.stdout.write(content);
+                var getTime = content.match(/time=(.*?) bitrate/g);
+                var bar;
+                if (getTime) {
+
+                    var rawTime = getTime[0].replace('time=', '').replace(' bitrate', '');
+                    arHMS = rawTime.split(":").reverse();
+                    time = parseFloat(arHMS[0]);
+                    if (arHMS[1]) time += parseInt(arHMS[1]) * 60;
+                    if (arHMS[2]) time += parseInt(arHMS[2]) * 60 * 60;
+
+                    var iPercentage = Math.round((time / sVideoDuration) * 100);
+                    bar = new ProgressBar('ffmpeg :bar :percent', { total: 100 });
+                    bar.tick(iPercentage);
+                    if (bar.complete) {
+                        console.log('complete\n');
+                    }
+
+                    progress_consumer.set(iPercentage, function(result){
+
+                    }); 
+
+                }
+
+
+            });
+            ffmpeg.on('exit', function(code) {
+
+                if (code !== 0) {
+                    ffmpeg_callback('[jobs] ffmpeg_video_encoder_fail!');
+                    return;
+                }
+
+                var convert_time = (new Date() - start) / 1000;
+                var ffmpegDebugLog ='{ffmpeg_video_encoder : [convert_time:'+convert_time+']}\n';
+
+                var log = '========= ffmpeg end =========\n';
+                    log += ffmpegDebugLog + ffmpegLog;
+ 
+                log_consumer.set(log, function(result){
+                    ffmpeg_callback(null);
+                }); 
+
+            });
 
         }
     ], function (err, ret) {
