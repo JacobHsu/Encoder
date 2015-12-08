@@ -44,6 +44,40 @@ ournal
 es present, no recovery needed
 ```
 
+###Web-based MongoDB admin
+
+[mongo-express](http://andzdroid.github.io/mongo-express/)
+
+Usage
+-----
+
+**To install:**
+
+    npm install mongo-express
+
+**To configure:**
+
+Copy `config.default.js` into a new file called `config.js`.
+
+```
+  basicAuth: {
+    username: process.env.ME_CONFIG_BASICAUTH_USERNAME || 'admin',
+    password: process.env.ME_CONFIG_BASICAUTH_PASSWORD || 'pass'
+  },
+
+```
+
+**To run:**
+
+    node app.js
+
+**To use:**
+
+Visit `http://localhost:8081` or whatever URL/port you entered into your
+config (if running standalone) or whatever `config.site.baseUrl` (if mounting
+as a middleware).
+
+
 ###Tests
 
 [JSON Editor Online](http://jsoneditoronline.org)
