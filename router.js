@@ -14,6 +14,11 @@ module.exports = function(app) {
 
     app.post('/progress', job.progress);
 
+    app.get('/result', function(req, res){
+        //res.sendFile(__dirname + '/result.html');
+        res.sendFile(__dirname + '/public/third_party/videojs-resolution-selector/example.html');
+    });
+
     app.get('*', notFound);
 
     var cp = require('child_process');

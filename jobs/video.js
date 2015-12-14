@@ -59,7 +59,7 @@ function VideoEncoder (job, log_consumer, progress_consumer, module_callback) {
             req.on('response', function(res){
                 //console.log(res.headers); 
                 if(res.headers['content-type'] !== 'video/mp4') {
-                    http_callback('[jobs] data type err!');
+                    http_callback('[jobs] content-type data type err!');
                     return
                 }
             });
