@@ -31,8 +31,12 @@ Win開cmd的快速方法
 wget --no-check-certificate  http://video-js.zencoder.com/oceans-clip.mp4  -O output.mp4
 ```
 
-```
+```bash
 wget --show-progress --no-check-certificate  http://video-js.zencoder.com/oceans-clip.mp4  -O output.mp4
+```
+
+```bash
+wget --no-check-certificate  https://googledrive.com/host/0By2vNp-15I-UOGIydmZOOGtTV0U -O output.mp4
 ```
 
 ### System

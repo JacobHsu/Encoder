@@ -87,6 +87,20 @@ config (if running standalone) or whatever `config.site.baseUrl` (if mounting
 as a middleware).
 
 
+###Test Files
+
+>http://vjs.zencdn.net/v/oceans.mp4 400p 9.63KB
+ http://www.html5videoplayer.net/videos/madagascar3.mp4 360p 28.7MB
+ https://videos.pexels.com
+
+
+Google Drive / 連結共用 / 開啟 - 公開在網路上  存取權任何人 (無需登入) 可以檢視
+https://drive.google.com/file/d/0By2vNp-15I-UOGIydmZOOGtTV0U/view?usp=sharing
+```
+https://googledrive.com/host/0By2vNp-15I-UOGIydmZOOGtTV0U
+```
+
+
 ###Tests
 
 [JSON Editor Online](http://jsoneditoronline.org)
@@ -100,7 +114,7 @@ job
     {
         "job": "video",
         "config": {
-          "file":"http://vjs.zencdn.net/v/oceans.mp4", 
+          "file":"https://googledrive.com/host/0By2vNp-15I-UOGIydmZOOGtTV0U", 
           "backend":"http://yourdomain/backend_api/type/:id"
         }
     }
