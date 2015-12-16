@@ -58,20 +58,20 @@ function VideoEncoder (job, log_consumer, progress_consumer, module_callback) {
              
             req.on('response', function(res){
                 //console.log(res.headers); 
-                if(res.headers['content-type'] !== 'video/mp4') {
-                    http_callback('[jobs] content-type data type err!');
-                    return
-                }
+                // if(res.headers['content-type'] !== 'video/mp4') {
+                //     http_callback('[jobs] content-type data type err!');
+                //     return
+                // }
+                http_callback(null);
             });
 
             req.end();
 
             req.on('error', function(e) {
                 console.error(e);
+                http_callback('[jobs] http.request err!');
                 return;
             });
-
-            http_callback(null);
         },
         function(wget_callback) {
 
