@@ -1,5 +1,5 @@
 //Exporting an anonymous function
-module.exports = function(app) {
+module.exports = function(app, io) {
     app.post('/', function (req, res) {
       res.send('POST request to homepage');
       console.log(req.body);
@@ -18,6 +18,38 @@ module.exports = function(app) {
         res.sendFile(__dirname + '/result.html');
         //res.sendFile(__dirname + '/public/third_party/videojs-resolution-selector/example.html');
     });
+
+    app.get('/socket', function(req, res){
+        res.sendFile(__dirname + '/test_helloworld/socket.html');
+    });
+
+
+    io.on('connection', function(socket){
+        console.log('[router] a user connected');
+        io.emit('chat message show', '[router] io connection...');
+
+        var fs = require('fs');
+        if (!fs.existsSync('./public')) {
+            console.log('target dir public no exists');
+            return;
+        }
+
+        fs.readdir('./public', function (err, data) {
+            if (err) throw err;
+            console.log(data);
+            io.emit('chat message show', data);
+        });
+
+        socket.on('disconnect', function(){
+            console.log('user disconnected');
+        });
+        socket.on('chat message', function(msg){
+            console.log('message: ' + msg);
+            // send and receive any events you want
+            io.emit('chat message show', msg);
+        });
+    });
+
 
     app.get('*', notFound);
 
