@@ -151,3 +151,7 @@ progress
     "log": "========= wget end =========\nhttp://vjs.zencdn.net/v/oceans.mp4\n",
     "time": "2015-11-23T01:50:07.483Z"
 }
+
+
+###References 
+* https://app.zencoder.com/docs

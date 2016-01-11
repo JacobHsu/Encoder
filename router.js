@@ -16,17 +16,15 @@ module.exports = function(app, io) {
 
     app.get('/result', function(req, res){
         res.sendFile(__dirname + '/result.html');
-        //res.sendFile(__dirname + '/public/third_party/videojs-resolution-selector/example.html');
     });
 
     app.get('/socket', function(req, res){
         res.sendFile(__dirname + '/test_helloworld/socket.html');
     });
 
-
     io.on('connection', function(socket){
         console.log('[router] a user connected');
-        io.emit('chat message show', '[router] io connection...');
+        //io.emit('chat message show', '[router] io connection...');
 
         var fs = require('fs');
         if (!fs.existsSync('./public')) {
@@ -34,10 +32,13 @@ module.exports = function(app, io) {
             return;
         }
 
-        fs.readdir('./public', function (err, data) {
+        fs.readdir('./public', function (err, oData) {
             if (err) throw err;
-            console.log(data);
-            io.emit('chat message show', data);
+
+            oData.pop();
+            console.log(oData);
+            io.emit('chat message show', oData);
+
         });
 
         socket.on('disconnect', function(){
