@@ -3,7 +3,7 @@ var config  = require('../../config')();
 
 exports.query = function(type, arg, callback) {
 
-    if (!config.database.mongodb || !config.database.table) {
+    if (!config.mongodb.url || !config.mongodb.collection) {
         callback('Unknow config data.');
         return;
     }
@@ -12,14 +12,14 @@ exports.query = function(type, arg, callback) {
         return;
     }
 
-    mongoClient.connect(config.database.mongodb, function(err, db) {
+    mongoClient.connect(config.mongodb.url, function(err, db) {
 
         if (err) {
             callback(err);
             return;
         }
 
-        var collection = db.collection(config.database.table);
+        var collection = db.collection(config.mongodb.collection);
 
         switch(type) {
             case 'find':
@@ -68,7 +68,7 @@ exports.query = function(type, arg, callback) {
 
 exports.update = function(find, arg, callback) {
 
-    if (!config.database.mongodb || !config.database.table) {
+    if (!config.mongodb.url || !config.mongodb.collection) {
         callback('Unknow config data.');
         return;
     }
@@ -77,14 +77,14 @@ exports.update = function(find, arg, callback) {
         return;
     }
 
-    mongoClient.connect(config.database.mongodb, function(err, db) {
+    mongoClient.connect(config.mongodb.url, function(err, db) {
 
         if (err) {
             callback(err);
             return;
         }
 
-        var collection = db.collection(config.database.table);
+        var collection = db.collection(config.mongodb.collection);
 
         collection.update(find, {$set: arg}, function (err, result) {
             if (err) {

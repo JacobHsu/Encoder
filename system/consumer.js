@@ -1,8 +1,8 @@
-var jobModel  = require('../models/job_model')();
+var config  = require('../config')();
+var jobModel  = require('../models/model-'+ config.dataBackend)();
 
 process.on('message', function(job) {
-    console.log('[consumer] job');
-    console.log(job);
+    //console.log('[consumer] job:',config.dataBackend,typeof job,job,job.uuid);
 
     var log_consumer = new log(job);
     var progress_consumer = new progress(job);
@@ -12,10 +12,9 @@ process.on('message', function(job) {
             console.log(err);
             return;
         }
-        console.log('[consumer] setState'+result);
 
         var req = {
-            config: job.config,
+            config: JSON.parse(job.config),
             uuid:job.uuid
         };
         require('../jobs/'+job.job)(req, log_consumer, progress_consumer, function(err, ret) {
@@ -23,7 +22,15 @@ process.on('message', function(job) {
                 console.log(err);
                 return;
             }
-            console.log('[consumer] require jobs');
+            jobModel.setState({uuid: job.uuid, state: 'complete'}, function(err, result) {
+                if (err) {
+                    console.log('setState complete fail');
+                    return;
+                }
+                process.send(ret);
+                process.exit();
+            });
+
         });
 
     });

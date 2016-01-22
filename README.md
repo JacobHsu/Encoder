@@ -18,10 +18,30 @@
 `npm install express --save`  
 `npm install body-parser --save`  
 `npm install mongodb --save`  
+`npm install mysql --save`  
 `npm install async --save`  
 `npm install node-uuid --save`  
 `npm install progress --save`  
 `npm install socket.io --save`  
+
+
+
+###MySQL
+
+CREATE TABLE IF NOT EXISTS `encoder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(36) CHARACTER SET utf8 NOT NULL,
+  `job` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `config` text CHARACTER SET utf8 NOT NULL,
+  `state` enum('wait','start','complete','error','delete') CHARACTER SET utf8 NOT NULL COMMENT '轉檔狀態',
+  `progress` int(11) NOT NULL,
+  `from` varchar(25) CHARACTER SET utf8 NOT NULL,
+  `agent` text CHARACTER SET utf8 NOT NULL,
+  `enterdate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `lastmod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `log` longtext CHARACTER SET utf8 NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=0 ;
 
 
 ###MongoDB 

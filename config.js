@@ -5,9 +5,20 @@ module.exports = function() {
             host:'127.0.0.1',
             port: 8888
         },
-        database: {
-            mongodb : 'mongodb://localhost:27017/myproject',
-            table: 'encoder'
+        // dataBackend can be 'mysql' or 'mongodb'. 
+        dataBackend: 'mysql',
+        mongodb: {
+            url: 'mongodb://localhost:27017/myproject',
+            collection: 'encoder'
+        },
+        mysql: {
+            user: 'root',
+            password: 'yourpwd',
+            host: '127.0.0.1',
+            port: '3306',
+            database : 'test',
+            table: 'encoder',
+            connectionLimit : 10
         },
         supervisor :{
             milliseconds: 3000

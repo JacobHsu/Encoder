@@ -274,7 +274,10 @@ function VideoEncoder (job, log_consumer, progress_consumer, module_callback) {
                     log += ffmpegDebugLog + ffmpegLog;
  
                 log_consumer.set(log, function(result){
-                    ffmpeg_callback(null);
+                    ffmpeg_callback(null, {
+                            fileUrl: fileUrl,
+                            state: 'Finished'
+                        });
                 }); 
 
             });

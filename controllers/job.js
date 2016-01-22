@@ -1,4 +1,5 @@
-var jobModel  = require('../models/job_model')();
+var config  = require('../config')();
+var jobModel  = require('../models/model-'+ config.dataBackend)();
 var ProgressBar = require('progress');
 /**
     {

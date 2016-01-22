@@ -61,7 +61,7 @@ Job.prototype.push = function(task, myCallback) {
             var task_json = {
                 uuid: fileId,
                 job: task.job,
-                config: task.config,
+                config: JSON.stringify(task.config),
                 from: task.from,
                 state: "wait",
                 progress: 0,
@@ -96,7 +96,11 @@ Job.prototype.pop = function(myCallback) {
             myCallback(err);
             return;
         }
-        myCallback(null, rows);
+        if(!rows) {
+            myCallback('mongodb no jobs');
+            return;
+        }
+        myCallback(null, rows[0]);
     });
 };
 
@@ -133,7 +137,7 @@ Job.prototype.delete = function(task, myCallback) {
  * @param {[type]} myCallback [description]
  */
 Job.prototype.setState = function (data, myCallback) {
-
+console.log('mongodb setState',data);
     if (!data.uuid) {
         myCallback('setState no uuid');
         return;
