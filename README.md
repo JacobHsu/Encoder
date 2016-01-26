@@ -7,7 +7,10 @@
 [wget](https://eternallybored.org/misc/wget/)  
 [ffmpeg] (http://ffmpeg.zeranoe.com/builds/)  
 
-[![NPM](https://nodei.co/npm/express.png?downloads=true&stars=true)](https://www.npmjs.com/package/express)
+[![NPM](https://nodei.co/npm/express.png?downloads=true&stars=true)](https://www.npmjs.com/package/express)  
+[![NPM](https://nodei.co/npm/async.png?downloads=true&stars=true)](https://www.npmjs.com/package/async)  
+[![NPM](https://nodei.co/npm/mongodb.png?downloads=true&stars=true)](https://www.npmjs.com/package/mongodb)  
+[![NPM](https://nodei.co/npm/mysql.png?downloads=true&stars=true)](https://www.npmjs.com/package/mysql)  
 
 ###npm
 
