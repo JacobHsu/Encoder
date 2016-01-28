@@ -26,6 +26,7 @@
 `npm install node-uuid --save`  
 `npm install progress --save`  
 `npm install socket.io --save`  
+`npm install nodemailer --save`  
 
 
 
